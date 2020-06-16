@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Random;
 
@@ -37,7 +38,7 @@ import java.util.Random;
  * and configure the model in a comparably safe way. It is adviced to use it.
  * @see ModelBuilder
  */
-public class LVQNN implements NeuralNetwork {
+public class LVQNN implements NeuralNetwork, Serializable {
 
 
 
@@ -56,6 +57,12 @@ public class LVQNN implements NeuralNetwork {
      * @see SafeLogger
      */
     private static final transient SafeLogger log = new SafeLogger();
+
+    /**
+     * May be used for serialization.
+     * @see #modelSerializer
+     */
+    private static final long serialVersionUID = 8786845050436221160L;
 
 
 
@@ -736,7 +743,7 @@ public class LVQNN implements NeuralNetwork {
             // ... (1.5) let some external watcher react to the
             //           model's state change if configured...
             callStateUpdateListenerSafely(sumError,
-                    currentEpoch == maxEpochs || currentLearnRate <= quitLearnRate);
+                    currentEpoch >= maxEpochs || currentLearnRate <= quitLearnRate);
 
             // ... (1.6) end of an LVQ iteration, repeat if necessary...
         }
