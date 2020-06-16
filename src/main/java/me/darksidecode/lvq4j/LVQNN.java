@@ -476,7 +476,7 @@ public class LVQNN implements NeuralNetwork {
 
             log.info("Normalized input in {} millis with function {}",
                     System.currentTimeMillis() - beginTime,
-                    inputNormalizationFunc.getClass().getSimpleName());
+                    inputNormalizationFunc.getClass().getName());
         }
     }
 
@@ -503,7 +503,7 @@ public class LVQNN implements NeuralNetwork {
 
         log.info("Initialized weights in {} millis with strategy {}",
                 System.currentTimeMillis() - beginTime,
-                weightsInitializer.getClass().getSimpleName());
+                weightsInitializer.getClass().getName());
 
         int[] samplesPerCluster = new int[trainSamples];
         log.debug("Samples of each type:");
