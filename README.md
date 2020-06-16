@@ -66,7 +66,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'me.darksidecode.lvq4j', name: 'lvq4j', version: '1.0.0'
+    implementation group: 'me.darksidecode.lvq4j', name: 'lvq4j', version: '1.0.0'
 }
 ```
 

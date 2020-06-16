@@ -164,7 +164,10 @@ public abstract class BasicDataRecord implements DataRecord {
      *
      * @see #saveToString()
      *
+     * @throws NullPointerException if the given string is null.
      * @throws IllegalStateException if any of this record's fields are non-default.
+     * @throws IllegalArgumentException if the given string cannot be parsed to form
+     *                                  a BasicDataRecord of this particular type.
      */
     @Override
     public void loadFromString(@NonNull String s) {
@@ -208,8 +211,15 @@ public abstract class BasicDataRecord implements DataRecord {
             data[len - 1] = labelIdD;
             labelId = (int) labelIdD;
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException(
-                    "invalid labelId: not an integer (plaintext): " + labelIdStr);
+            try {
+                // Try to translate labelText (implementation-dependent) to labelId number.
+                labelId = labelTextToLabelId(labelIdStr);
+                data[len - 1] = (double) labelId;
+            } catch (IllegalArgumentException exc) {
+                throw new IllegalArgumentException(
+                        "invalid labelId: not a numerical ID and cannot be translated with " +
+                                "labelTextToLabelId implemented in " + getClass().getName() + ": " + labelIdStr);
+            }
         }
 
         // Restore cluster name (implementation-dependent)

@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'me.darksidecode.lvq4j'
@@ -7,6 +8,64 @@ version '1.0.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    repositories {
+        maven {
+            url 'https://archiva.reflex.rip/repository/public/'
+
+            credentials {
+                // ~/.gradle/gradle.properties
+                username reflexPrivateUsername
+                password reflexPrivatePassword
+            }
+
+            authentication {
+                basic BasicAuthentication
+            }
+        }
+    }
+
+    publications {
+        maven(MavenPublication) {
+            artifactId = 'lvq4j'
+            from components.java
+
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+
+            pom {
+                name = 'LVQ4J'
+                description = 'LVQ (Learning Vector Quantization) library for Java'
+                url = 'https://github.com/MeGysssTaa/lvq4j'
+
+                licenses {
+                    license {
+                        name = 'Apache License 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'DarksideCode'
+                        name = 'German Vekhorev'
+                    }
+                }
+            }
+        }
+    }
+}
 
 repositories {
     mavenCentral()
