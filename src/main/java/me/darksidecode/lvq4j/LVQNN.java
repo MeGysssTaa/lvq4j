@@ -576,8 +576,12 @@ public class LVQNN implements NeuralNetwork, Serializable {
      * @param other the model to copy serializable configuration fields from.
      *
      * @throws NullPointerException if other is null.
+     * @throws IllegalStateException if this == other (self-copy).
      */
     public void copyBasicConfiguration(@NonNull LVQNN other) {
+        if (this == other)
+            throw new IllegalStateException("self-copy");
+
         rng = other.rng;
         snapshotAutoSavePeriod = other.snapshotAutoSavePeriod;
         progressReportPeriod = other.progressReportPeriod;
@@ -598,10 +602,14 @@ public class LVQNN implements NeuralNetwork, Serializable {
      * @param other the model to copy internal neural network state fields from.
      *
      * @throws NullPointerException if other is null.
+     * @throws IllegalStateException if this == other (self-copy).
      * @throws IllegalArgumentException if trainData.length != other.trainData.length, or
      *                                  if trainData[0].length != other.trainData[0].length.
      */
     public void copyInternals(@NonNull LVQNN other) {
+        if (this == other)
+            throw new IllegalStateException("self-copy");
+
         int nFeatures = other.getFeaturesNumber();
 
         if (getFeaturesNumber() != nFeatures
