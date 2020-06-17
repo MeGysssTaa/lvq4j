@@ -143,9 +143,10 @@ public class LVQNN implements NeuralNetwork, Serializable {
      * @see NormalizationFunction
      *
      * (default = null)
+     * (transient: manual serialization required)
      */
     @Getter @Setter
-    private NormalizationFunction inputNormalizationFunc;
+    private transient NormalizationFunction inputNormalizationFunc;
 
     /**
      * Strategy to use for chosing the <trainSamples> number of samples from the train data set.
@@ -154,9 +155,10 @@ public class LVQNN implements NeuralNetwork, Serializable {
      * @see #trainSamples
      *
      * (default = N_RANDOM)
+     * (transient: manual serialization required)
      */
     @Getter @Setter @NonNull
-    private WeightsInitializer weightsInitializer = WeightsInitializer.N_RANDOM;
+    private transient WeightsInitializer weightsInitializer = WeightsInitializer.N_RANDOM;
 
     /**
      * Algorithm for measuring the distance between two vectors to use
@@ -167,9 +169,10 @@ public class LVQNN implements NeuralNetwork, Serializable {
      * @see #findBestMatchingUnit(double[])
      *
      * (default = EUCLIDEAN_DISTANCE)
+     * (transient: manual serialization required)
      */
     @Getter @Setter @NonNull
-    private DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN_DISTANCE;
+    private transient DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN_DISTANCE;
 
     /**
      * Random number generator used in weights initialization.
@@ -195,9 +198,10 @@ public class LVQNN implements NeuralNetwork, Serializable {
      * @see #restoreFromSnapshot()
      *
      * (default = null)
+     * (transient: manual serialization required)
      */
     @Getter @Setter
-    private ModelSerializer modelSerializer;
+    private transient ModelSerializer modelSerializer;
 
     /**
      * Defines the behavior of the model's automated snapshots save algorithm:
@@ -245,9 +249,10 @@ public class LVQNN implements NeuralNetwork, Serializable {
      * then the model will not expect anything to react to its state changes externally.
      *
      * (default = null)
+     * (transient: manual serialization required)
      */
     @Getter @Setter
-    private ModelStateListener modelStateListener;
+    private transient ModelStateListener modelStateListener;
 
     /**
      * Defines whether the training process should yield current thread
@@ -559,6 +564,63 @@ public class LVQNN implements NeuralNetwork, Serializable {
         Objects.requireNonNull(modelSerializer,
                 "cannot restore model from snapshot: no serializer set")
                 .restoreFromSnapshot(this);
+    }
+
+    /**
+     * Copy basic serializable configuration fields from the given LVQNN
+     * network into this one. May be used for deserialization purposes.
+     *
+     * Important: transient configuration fields (e.g. interfaces such as
+     * weightsInitializer) are not copied automatically by this method.
+     *
+     * @param other the model to copy serializable configuration fields from.
+     *
+     * @throws NullPointerException if other is null.
+     */
+    public void copyBasicConfiguration(@NonNull LVQNN other) {
+        rng = other.rng;
+        snapshotAutoSavePeriod = other.snapshotAutoSavePeriod;
+        progressReportPeriod = other.progressReportPeriod;
+        yieldTrainThread = other.yieldTrainThread;
+        learnRate = other.learnRate;
+        quitLearnRate = other.quitLearnRate;
+        linearLearnRateDecay = other.linearLearnRateDecay;
+        momentum = other.momentum;
+        maxEpochs = other.maxEpochs;
+    }
+
+    /**
+     * Copy internal operable model state data (e.g. weights and current iteration number)
+     * from the given LVQNN object into this one. May be used for deserialization purposes.
+     * This method assumes that both of the models were provided the same input train data.
+     * If not, then further behavior of this particular model is undefined.
+     *
+     * @param other the model to copy internal neural network state fields from.
+     *
+     * @throws NullPointerException if other is null.
+     * @throws IllegalArgumentException if trainData.length != other.trainData.length, or
+     *                                  if trainData[0].length != other.trainData[0].length.
+     */
+    public void copyInternals(@NonNull LVQNN other) {
+        int nFeatures = other.getFeaturesNumber();
+
+        if (getFeaturesNumber() != nFeatures
+                || trainData.length != other.trainData.length)
+            throw new IllegalArgumentException("train data vectors do not match");
+
+        lastWinnerDistance = other.lastWinnerDistance;
+        lastTrainErrorSquare = other.lastTrainErrorSquare;
+        weights = new double[other.weights.length][nFeatures];
+
+        // Don't make the other model share its arrays. Deep-clone them instead.
+        for (int i = 0; i < weights.length; i++)
+            System.arraycopy(
+                    other.weights[i], 0,
+                    weights[i], 0,
+                    nFeatures);
+
+        currentEpoch = other.currentEpoch;
+        currentLearnRate = other.currentLearnRate;
     }
 
     /**
