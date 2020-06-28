@@ -50,7 +50,7 @@ Nevertheless, LVQ is still one of the simplest neural network algorithms. In mos
     <dependency>
         <groupId>me.darksidecode.lvq4j</groupId>
         <artifactId>lvq4j</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.3</version>
     </dependency>
 </dependencies>
 ```
@@ -66,13 +66,13 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'me.darksidecode.lvq4j', name: 'lvq4j', version: '1.0.0'
+    implementation group: 'me.darksidecode.lvq4j', name: 'lvq4j', version: '1.0.3'
 }
 ```
 
 
 # Examples
-**TODO:** add something...
+* [Iris Data Set](https://github.com/MeGysssTaa/lvq4j-example-iris)
 
 > Using **LVQ4J** in an own project? Want it to be listed here? **[Feel free to make a pull request!](https://github.com/MeGysssTaa/lvq4j/pulls)**
 
