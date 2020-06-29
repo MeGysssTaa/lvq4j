@@ -650,9 +650,9 @@ public class LVQNN implements NeuralNetwork, Serializable {
     /**
      * Begins the neural network training process in the current thread (synchronously).
      *
-     * If the model was restored from a previously snapshot, and the current state is
-     * unfinished (currentEpoch<maxEpochs and currentLearnRate>quitLearnRate), then the
-     * model will resume training. Otherwise, it will begin training from scratch.
+     * If the model was restored from a previously saved snapshot, and the current state
+     * is unfinished (currentEpoch<maxEpochs and currentLearnRate>quitLearnRate), then
+     * the model will resume training. Otherwise, it will begin training from scratch.
      *
      * After input and state validation, the method will iteratively run the core LVQ
      * algorithm (https://en.wikipedia.org/wiki/Learning_vector_quantization) while both
