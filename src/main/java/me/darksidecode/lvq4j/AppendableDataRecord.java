@@ -31,6 +31,11 @@ import java.util.Arrays;
 public abstract class AppendableDataRecord extends BasicDataRecord {
 
     /**
+     * Index of the next insertion in the {@link BasicDataRecord#data} array.
+     */
+    protected int nextIndex = -1; // start with -1 because nextIndex() returns "++nextIndex"
+
+    /**
      * The default constructor is used in order to restore this record from a String.
      * @see #loadFromString(String)
      */
@@ -52,7 +57,7 @@ public abstract class AppendableDataRecord extends BasicDataRecord {
     @SuppressWarnings ("JavadocReference")
     public AppendableDataRecord(@NonNull String labelText, int labelId, int nFeatures) {
         super(labelText, labelId, nans(nFeatures + 1));
-        data[nFeatures] = (double) labelId;
+        data[nFeatures] = labelId;
     }
 
     /**
@@ -74,7 +79,7 @@ public abstract class AppendableDataRecord extends BasicDataRecord {
         int nextIndex = nextIndex();
 
         if (nextIndex == -1)
-            throw new IllegalStateException("already filled");
+            throw new IllegalStateException("already full");
 
         data[nextIndex] = featureValue;
 
@@ -113,8 +118,8 @@ public abstract class AppendableDataRecord extends BasicDataRecord {
      * @return true if and only if nextIndex() returns -1, or, in other words,
      *         there are no free features slots left in the data array.
      */
-    public boolean isFilled() {
-        return nextIndex() == -1;
+    public boolean isFull() {
+        return nextIndex == data.length - 1;
     }
 
     /**
@@ -125,11 +130,7 @@ public abstract class AppendableDataRecord extends BasicDataRecord {
      *         -1 if the data array is already filled.
      */
     private int nextIndex() {
-        for (int i = 0; i < data.length; i++)
-            if (Double.isNaN(data[i]))
-                return i;
-
-        return -1;
+        return isFull() ? -1 : ++nextIndex;
     }
 
     /**
