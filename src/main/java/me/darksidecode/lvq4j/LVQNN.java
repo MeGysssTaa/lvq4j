@@ -38,7 +38,7 @@ import java.util.Random;
  * and configure the model in a comparably safe way. It is adviced to use it.
  * @see ModelBuilder
  */
-public class LVQNN implements NeuralNetwork, Serializable {
+public class LVQNN implements Serializable {
 
 
 
@@ -478,7 +478,6 @@ public class LVQNN implements NeuralNetwork, Serializable {
      *
      * @see #inputNormalizationFunc for details.
      */
-    @Override
     public void normalizeInput() {
         if (inputNormalizationFunc != null) {
             long beginTime = System.currentTimeMillis();
@@ -504,7 +503,6 @@ public class LVQNN implements NeuralNetwork, Serializable {
      *
      * @see #weightsInitializer for details.
      */
-    @Override
     public void initializeWeights() {
         long beginTime = System.currentTimeMillis();
         int nFeatures = getFeaturesNumber();
@@ -541,7 +539,6 @@ public class LVQNN implements NeuralNetwork, Serializable {
      *
      * @throws NullPointerException if modelSerializer is null (not configured).
      */
-    @Override
     public void saveSnapshot() {
         Objects.requireNonNull(modelSerializer,
                 "cannot save model snapshot: no serializer set")
@@ -559,7 +556,6 @@ public class LVQNN implements NeuralNetwork, Serializable {
      *
      * @throws NullPointerException if modelSerializer is null (not configured).
      */
-    @Override
     public void restoreFromSnapshot() {
         Objects.requireNonNull(modelSerializer,
                 "cannot restore model from snapshot: no serializer set")
@@ -678,7 +674,7 @@ public class LVQNN implements NeuralNetwork, Serializable {
      * throws these unhandled Exceptions/Errors considerably often, then the time it will take
      * for the neural network to finish training will grow significantly.
      *
-     * This method should not be ran more than once on a
+     * This method should not be run more than once on a
      * model, otherwise its further behavior is undefined.
      *
      * @see #halt
@@ -696,7 +692,6 @@ public class LVQNN implements NeuralNetwork, Serializable {
      * @throws IllegalStateException if the weights have not been initialized yet, or
      *                               if the model has been restored from a corrupted snapshot.
      */
-    @Override
     public void train() {
         if (weights == null)
             throw new IllegalStateException(
@@ -877,7 +872,6 @@ public class LVQNN implements NeuralNetwork, Serializable {
      * @return label ID (cluster) that this neural network has assigned
      *         to the given test vector at its current state.
      */
-    @Override
     public int classify(@NonNull double[] testVec) {
         if (testVec.length == 0)
             throw new IllegalArgumentException("testVec cannot be empty");
@@ -908,7 +902,6 @@ public class LVQNN implements NeuralNetwork, Serializable {
      * @return a sample vector from the current weights data
      *         that is dimensionally the closest to the given.
      */
-    @Override
     public double[] findBestMatchingUnit(@NonNull double[] testVec) {
         double minDist = Double.MAX_VALUE;
         double[] bmu = null;

@@ -36,7 +36,7 @@ public interface ModelStateListener {
      *                         algorithm (true), or the state is still unfinished, and more
      *                         iterations are expected (false).
      */
-    void onStateUpdate(NeuralNetwork model, int currentEpoch, double currentLearnRate,
+    void onStateUpdate(LVQNN model, int currentEpoch, double currentLearnRate,
                        double currentErrorSquare, boolean finishedTraining) throws Throwable;
 
 }

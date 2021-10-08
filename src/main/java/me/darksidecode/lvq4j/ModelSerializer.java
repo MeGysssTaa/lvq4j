@@ -27,7 +27,7 @@ public interface ModelSerializer {
      * @param model model whose current state should be saved.
      *              Guaranteed to be non-null internally.
      */
-    void saveSnapshot(NeuralNetwork model);
+    void saveSnapshot(LVQNN model);
 
     /**
      * Load configuration and internal data (including weights and
@@ -37,6 +37,6 @@ public interface ModelSerializer {
      * @param model model whose current state should be restored.
      *              Guaranteed to be non-null internally.
      */
-    void restoreFromSnapshot(NeuralNetwork model);
+    void restoreFromSnapshot(LVQNN model);
 
 }
