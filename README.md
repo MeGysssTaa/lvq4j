@@ -3,7 +3,7 @@
 
 
 # Heads up
-**[I am](https://github.com/MeGysssTaa)** **not** a professional data scientist in any way. I created this library solely for my own small research purposes in the machine learning field according to some publicly available papers, articles, and tutorials.
+**[I](https://github.com/MeGysssTaa)** **am not** a professional data scientist in any way. I created this library solely for my own small research purposes in the machine learning field according to some publicly available papers, articles, and tutorials.
 
 
 > For this reason, I hereby state that **I cannot guarantee that this implementation is 100% accurate and will always work as expected**. Use LVQ4J in your projects **on your own risk**. 
@@ -50,7 +50,7 @@ Nevertheless, LVQ is still one of the simplest neural network algorithms. In mos
     <dependency>
         <groupId>me.darksidecode.lvq4j</groupId>
         <artifactId>lvq4j</artifactId>
-        <version>1.0.3</version>
+        <version>1.1.0</version>
     </dependency>
 </dependencies>
 ```
@@ -66,7 +66,7 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'me.darksidecode.lvq4j', name: 'lvq4j', version: '1.0.3'
+    implementation group: 'me.darksidecode.lvq4j', name: 'lvq4j', version: '1.1.0'
 }
 ```
 
