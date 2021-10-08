@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -35,8 +37,9 @@ final class SafeLogger {
 
     /**
      * The logger implementation to use. Either our internal,
-     * FallbackLogger, or a org.slf4j.Logger instance - depending
-     * on the current classpath.
+     * FallbackLogger, or an org.slf4j.Logger instance - depending
+     * on the current classpath. (May also be a NopLogger that extends
+     * FallbackLogger.)
      */
     private Object impl;
 
@@ -45,12 +48,25 @@ final class SafeLogger {
      * classpath for Slf4j and choosing the appropriate logging implementation.
      */
     SafeLogger() {
-        try {
-            Class.forName("org.slf4j.Logger");
-            impl = LoggerFactory.getLogger("LVQ4J");
-        } catch (ClassNotFoundException ex) {
-            ((FallbackLogger) (impl = new FallbackLogger())).warn(
-                    "Slf4j is not available. LVQ4J will be using its FallbackLogger.");
+        switch (LVQ4J.getLoggingStrategy()) {
+            case DEFAULT:
+                try {
+                    Class.forName("org.slf4j.Logger");
+                    impl = LoggerFactory.getLogger("LVQ4J");
+                } catch (ClassNotFoundException ex) {
+                    ((FallbackLogger) (impl = new FallbackLogger())).warn(
+                            "Slf4j is not available. LVQ4J will be using its FallbackLogger.");
+                }
+
+                break;
+
+            case FORCE_INTERNAL:
+                impl = new FallbackLogger();
+                break;
+
+            case OFF:
+                impl = new NopLogger();
+                break;
         }
     }
 
@@ -121,8 +137,8 @@ final class SafeLogger {
 
 
 
-    private final class FallbackLogger {
-        private final DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+    private static class FallbackLogger {
+        private static final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm:ss");
 
         private void debug(String message, Object... format) {
             log("DEBUG", message, false, format);
@@ -141,19 +157,32 @@ final class SafeLogger {
             t.printStackTrace();
         }
 
-        private void log(String level, String message, boolean errStream, Object... format) {
+        protected void log(String level, String message, boolean errStream, Object... format) {
             message = message
                     .replace("%", "%%")
                     .replace("{}", "%s");
 
-            String time = timeFormat.format(new Date());
+            String time = LocalTime.now().format(timeFmt);
             String formattedMsg = (format == null || format.length == 0)
                     ? message : String.format(message, format);
 
             (errStream ? System.err : System.out)
-                    .printf("[%s] [LVQ4J/SimpleLogger] [%s] %s : %s\n",
+                    .printf("[%s] [LVQ4J] [%s] %s : %s\n",
                             time, Thread.currentThread().getName(), level, formattedMsg);
         }
+    }
+
+    /*
+
+    Disables logging completely by basically ignoring any method calls.
+    Used for LoggingStrategy.OFF. Exceptions will still be printed in
+    the standard error stream.
+
+     */
+
+    private static class NopLogger extends FallbackLogger {
+        @Override
+        protected void log(String level, String message, boolean errStream, Object... format) {}
     }
 
 }
