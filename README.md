@@ -50,7 +50,7 @@ Nevertheless, LVQ is still one of the simplest neural network algorithms. In mos
     <dependency>
         <groupId>me.darksidecode.lvq4j</groupId>
         <artifactId>lvq4j</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.0</version>
     </dependency>
 </dependencies>
 ```
@@ -66,7 +66,7 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'me.darksidecode.lvq4j', name: 'lvq4j', version: '1.1.0'
+    implementation group: 'me.darksidecode.lvq4j', name: 'lvq4j', version: '1.2.0'
 }
 ```
 
