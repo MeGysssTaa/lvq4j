@@ -17,6 +17,7 @@
 package me.darksidecode.lvq4j;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
 
@@ -37,7 +38,7 @@ public class LVQ4J {
      *
      * @see LoggingStrategy
      */
-    @Getter @Setter
+    @Getter @Setter @NonNull
     private static LoggingStrategy loggingStrategy;
 
     static {
