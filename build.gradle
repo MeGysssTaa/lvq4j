@@ -87,7 +87,7 @@ repositories {
     mavenCentral()
 }
 
-def log4jVersion = '2.13.3'
+def log4jVersion = '2.15.0'
 
 dependencies {
     // Logging
